@@ -1,0 +1,101 @@
+<!-- <mat-card>
+    <form [formGroup]="form" class="min-width">
+      <mat-card-header>
+        <mat-card-title>Novo Título</mat-card-title>
+      </mat-card-header>
+  
+      <mat-form-field>
+        <input matInput placeholder="Nome" formControlName="name">
+      </mat-form-field>
+  
+      <mat-form-field>
+        <input matInput placeholder="Ano" formControlName="year">
+      </mat-form-field>
+  
+      <mat-form-field>
+        <textarea matInput placeholder="Sinopse" formControlName="synopsis"></textarea>
+      </mat-form-field>
+  
+      <mat-form-field>
+        <input matInput placeholder="Categoria" formControlName="category">
+      </mat-form-field>
+  
+      <div formGroupName="diretor">
+        <mat-form-field>
+          <input matInput placeholder="Nome do Diretor" formControlName="name">
+        </mat-form-field>
+      </div>
+  
+      <div formGroupName="classe">
+        <mat-form-field>
+          <input matInput placeholder="Nome da Classe" formControlName="name">
+        </mat-form-field>
+  
+        <mat-form-field>
+          <input matInput placeholder="Valor da Classe" formControlName="valor">
+        </mat-form-field>
+  
+        <mat-form-field>
+          <input matInput placeholder="Data da Classe" formControlName="date">
+        </mat-form-field>
+      </div>
+  
+      <div formArrayName="ator">
+        <div *ngFor="let atorGroup of form.controls.ator.controls; let i = index" [formGroupName]="i">
+          <mat-form-field>
+            <input matInput placeholder="Nome do Ator" formControlName="name">
+          </mat-form-field>
+        </div>
+      </div>
+  
+    </form>
+  
+    <mat-card-actions>
+      <button mat-raised-button (click)="onSubmit()">Salvar</button>
+      <button mat-button (click)="onCancel()">Cancelar</button>
+    </mat-card-actions>
+  </mat-card> -->
+
+  <div class="titulos-form">
+    <h2>{{ form.value._idTitulo ? 'Editar Título' : 'Novo Título' }}</h2>
+    
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label for="name">Nome:</label>
+      <input type="text" id="name" formControlName="name" required>
+  
+      <label for="year">Ano:</label>
+      <input type="number" id="year" formControlName="year" required>
+  
+      <label for="synopsis">Sinopse:</label>
+      <textarea id="synopsis" formControlName="synopsis"></textarea>
+  
+      <label for="category">Categoria:</label>
+      <input type="text" id="category" formControlName="category" required>
+  
+      <label for="diretor">Diretor:</label>
+      <select id="diretor" formControlName="diretor">
+        <option *ngFor="let diretor of diretores" [value]="diretor._idDiretor">
+          {{ diretor.name }}
+        </option>
+      </select>
+  
+      <label for="classe">Classe:</label>
+      <select id="classe" formControlName="classe">
+        <option *ngFor="let classe of classes" [value]="classe._idClasse">
+          {{ classe.name }}
+        </option>
+      </select>
+  
+      <label for="ator">Ator:</label>
+      <div formArrayName="ator">
+        <div *ngFor="let atorGroup of form.controls.ator.controls; let i = index" [formGroupName]="i">
+          <mat-form-field>
+            <input matInput placeholder="Nome do Ator" formControlName="name">
+          </mat-form-field>
+        </div>
+      </div>
+  
+      <button type="submit">Salvar</button>
+      <button type="button" (click)="onCancel()">Cancelar</button>
+    </form>
+  </div>

@@ -1,0 +1,93 @@
+<mat-card>
+
+  <mat-toolbar color="black">
+    <span>Títulos</span>
+  </mat-toolbar>
+
+  <div *ngIf="titulos$ | async as titulos; else loading">
+    <table mat-table [dataSource]="titulos" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="_id">
+        <th mat-header-cell *matHeaderCellDef> Id </th>
+        <td mat-cell *matCellDef="let titulo"> {{ titulo._idTitulo }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Título </th>
+        <td mat-cell *matCellDef="let titulo"> {{ titulo.name }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="atorNames">
+        <th mat-header-cell *matHeaderCellDef> Atores </th>
+        <td mat-cell *matCellDef="let titulo">
+          <ng-container *ngFor="let ator of titulo.ator">
+            {{ ator.name }}<br>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="diretorName">
+        <th mat-header-cell *matHeaderCellDef> Diretor </th>
+        <td mat-cell *matCellDef="let titulo"> {{ titulo.diretor.name }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="year">
+        <th mat-header-cell *matHeaderCellDef> Ano </th>
+        <td mat-cell *matCellDef="let titulo"> {{ titulo.year }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="synopsis">
+        <th mat-header-cell *matHeaderCellDef> Sinopse </th>
+        <td mat-cell *matCellDef="let titulo"> {{ titulo.synopsis }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef> Categoria </th>
+        <td mat-cell *matCellDef="let titulo"> {{ titulo.category }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="className">
+        <th mat-header-cell *matHeaderCellDef> Classe </th>
+        <td mat-cell *matCellDef="let titulo"> {{ titulo.classe.name }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="classValor">
+        <th mat-header-cell *matHeaderCellDef> Valor da Classe </th>
+        <td mat-cell *matCellDef="let titulo"> {{ titulo.classe.valor }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="classDate">
+        <th mat-header-cell *matHeaderCellDef> Data da Classe </th>
+        <td mat-cell *matCellDef="let titulo"> {{ titulo.classe.date }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef class="action-column">
+          <button mat-mini-fab color="accent" aria-label="Adicionar um título" (click)="onAdd()" class="action-column-header">
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-header-cell>
+
+        <mat-cell *matCellDef="let titulo" class="action-column">
+          <button mat-icon-button color="primary" aria-label="Editar Título" (click)="onEdit(titulo)">
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button mat-icon-button color="warn" aria-label="Remover Título" (click)="onRemove(titulo)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <ng-template #loading>
+    <div class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+
+</mat-card>
