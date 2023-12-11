@@ -88,10 +88,12 @@
   
       <label for="ator">Ator:</label>
       <div formArrayName="ator">
-        <div *ngFor="let atorGroup of form.controls.ator.controls; let i = index" [formGroupName]="i">
-          <mat-form-field>
-            <input matInput placeholder="Nome do Ator" formControlName="name">
-          </mat-form-field>
+        <div *ngFor="let atorControl of atorControls; let i = index">
+          <select *ngIf="atorControl" [formControl]="atorControl.get('_idAtor')">
+            <option *ngFor="let ator of atores" [value]="ator._idAtor">
+              {{ ator.name }}
+            </option>
+          </select>
         </div>
       </div>
   

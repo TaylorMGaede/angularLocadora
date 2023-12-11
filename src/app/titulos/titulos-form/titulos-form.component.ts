@@ -34,12 +34,12 @@ export class TitulosFormComponent implements OnInit {
       valor: 0,
       date: ['']
     }),
-    ator: this.formBuilder.array<FormGroup>([])
+    atores: this.formBuilder.array([])
   });
   
   diretores: Diretor[] = [];
   classes: Classe[] = [];
-  atores: Ator[] = [];
+  atoresList: Ator[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -52,12 +52,9 @@ export class TitulosFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Recupera a lista de diretores, classes e atores
     this.diretoresService.list().subscribe(diretores => this.diretores = diretores);
     this.classesService.list().subscribe(classes => this.classes = classes);
-    this.atoresService.list().subscribe(atores => this.atores = atores);
-
-    // Restante do ngOnInit...
+    this.atoresService.list().subscribe(atores => this.atoresList = atores);
   }
 
   onSubmit() {
@@ -101,10 +98,33 @@ export class TitulosFormComponent implements OnInit {
   }
 
   private validateAtor(): boolean {
+    const atoresArray = this.form.value.atores as Array<number>;
+    return atoresArray.every(atorId =>
+      atorId === null || (atorId !== undefined && this.atoresList.map(ator => ator._idAtor).includes(atorId))
+    );
+  }
+
+  /* private validateAtor(): boolean {
     const idAtorArray = this.form.value.ator as Array<{ _idAtor: number | null | undefined }>;
     return idAtorArray.every(ator =>
       ator?._idAtor === null || (ator?._idAtor !== undefined && this.atores.map(a => a._idAtor).includes(ator?._idAtor))
     );
+  } */
+
+  addAtor() {
+    const atoresArray = this.form.get('atores') as FormArray;
+    atoresArray.push(this.formBuilder.control(null));
+  }
+
+  // Remove um ator do array de atores
+  removeAtor(index: number) {
+    const atoresArray = this.form.get('atores') as FormArray;
+    atoresArray.removeAt(index);
+  }
+
+  // Obtém controles do array de atores para uso no template
+  getAtorControls() {
+    return (this.form.get('atores') as FormArray).controls;
   }
 
   /* form = this.formBuilder.group({
