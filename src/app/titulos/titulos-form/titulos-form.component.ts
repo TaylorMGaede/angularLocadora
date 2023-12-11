@@ -104,6 +104,31 @@ export class TitulosFormComponent implements OnInit {
     );
   }
 
+  addAtor() {
+    const atorControl = this.formBuilder.group({
+      _idAtor: [null],
+      name: [''],
+    });
+    (this.form.get('atores') as FormArray).push(atorControl);
+  }
+  
+  removeAtor(index: number) {
+    (this.form.get('atores') as FormArray).removeAt(index);
+  }
+
+  getAtorControls() {
+    return (this.form.get('atores') as FormArray).controls as FormGroup[];
+  }
+
+  /* addAtor() {
+    const atorControl = this.formBuilder.control(null);
+    (this.form.get('atores') as FormArray).push(atorControl);
+  }
+  
+  removeAtor(index: number) {
+    (this.form.get('atores') as FormArray).removeAt(index);
+  } */
+
   /* private validateAtor(): boolean {
     const idAtorArray = this.form.value.ator as Array<{ _idAtor: number | null | undefined }>;
     return idAtorArray.every(ator =>
@@ -111,21 +136,20 @@ export class TitulosFormComponent implements OnInit {
     );
   } */
 
-  addAtor() {
+  /* addAtor() {
     const atoresArray = this.form.get('atores') as FormArray;
     atoresArray.push(this.formBuilder.control(null));
   }
 
-  // Remove um ator do array de atores
   removeAtor(index: number) {
     const atoresArray = this.form.get('atores') as FormArray;
     atoresArray.removeAt(index);
-  }
+  } */
 
   // Obtém controles do array de atores para uso no template
-  getAtorControls() {
+  /* getAtorControls() {
     return (this.form.get('atores') as FormArray).controls;
-  }
+  } */
 
   /* form = this.formBuilder.group({
     _idTitulo: 0,

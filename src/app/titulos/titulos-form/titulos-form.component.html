@@ -56,21 +56,27 @@
     </mat-card-actions>
   </mat-card> -->
 
-  <div class="titulos-form">
-    <h2>{{ form.value._idTitulo ? 'Editar Título' : 'Novo Título' }}</h2>
-    
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <label for="name">Nome:</label>
-      <input type="text" id="name" formControlName="name" required>
+  <mat-card>
+    <form [formGroup]="form" class="min-width">
+      <mat-card-header>
+        <mat-card-title>Novo Título</mat-card-title>
+      </mat-card-header>
   
-      <label for="year">Ano:</label>
-      <input type="number" id="year" formControlName="year" required>
+      <mat-form-field>
+        <input matInput placeholder="Nome" formControlName="name">
+      </mat-form-field>
   
-      <label for="synopsis">Sinopse:</label>
-      <textarea id="synopsis" formControlName="synopsis"></textarea>
+      <mat-form-field>
+        <input matInput placeholder="Ano" formControlName="year">
+      </mat-form-field>
   
-      <label for="category">Categoria:</label>
-      <input type="text" id="category" formControlName="category" required>
+      <mat-form-field>
+        <textarea matInput placeholder="Sinopse" formControlName="synopsis"></textarea>
+      </mat-form-field>
+  
+      <mat-form-field>
+        <input matInput placeholder="Categoria" formControlName="category">
+      </mat-form-field>
   
       <label for="diretor">Diretor:</label>
       <select id="diretor" formControlName="diretor">
@@ -78,7 +84,7 @@
           {{ diretor.name }}
         </option>
       </select>
-  
+
       <label for="classe">Classe:</label>
       <select id="classe" formControlName="classe">
         <option *ngFor="let classe of classes" [value]="classe._idClasse">
@@ -86,18 +92,39 @@
         </option>
       </select>
   
-      <label for="ator">Ator:</label>
+      <!-- <div formArrayName="atores">
+        <div *ngFor="let atorControl of form.get('atores')?.controls; let i = index">
+          <mat-form-field>
+            <mat-label>Ator {{ i + 1 }}:</mat-label>
+            <select matNativeControl [formControl]="atorControl">
+              <option *ngFor="let ator of atoresList" [value]="ator._idAtor">
+                {{ ator.name }}
+              </option>
+            </select>
+            <button mat-icon-button color="warn" (click)="removeAtor(i)">
+              <mat-icon>remove</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+      </div> -->
+
       <div formArrayName="ator">
-        <div *ngFor="let atorControl of atorControls; let i = index">
-          <select *ngIf="atorControl" [formControl]="atorControl.get('_idAtor')">
-            <option *ngFor="let ator of atores" [value]="ator._idAtor">
-              {{ ator.name }}
-            </option>
-          </select>
+        <div *ngFor="let atorGroup of getAtorControls(); let i = index" [formGroupName]="i">
+          <mat-form-field>
+            <input matInput placeholder="Nome do Ator" formControlName="name">
+          </mat-form-field>
+          <button mat-icon-button color="warn" (click)="removeAtor(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
       </div>
+      
+      <button mat-raised-button (click)="addAtor()">Adicionar Ator</button>
   
-      <button type="submit">Salvar</button>
-      <button type="button" (click)="onCancel()">Cancelar</button>
     </form>
-  </div>
+  
+    <mat-card-actions>
+      <button mat-raised-button (click)="onSubmit()">Salvar</button>
+      <button mat-button (click)="onCancel()">Cancelar</button>
+    </mat-card-actions>
+  </mat-card>
