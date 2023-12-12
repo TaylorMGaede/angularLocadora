@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, NonNullableFormBuilder } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { TitulosService } from '../service/titulos.service';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -18,20 +18,112 @@ import { AtoresService } from 'src/app/atores/service/atores.service';
 })
 export class TitulosFormComponent implements OnInit {
 
+  form!: FormGroup;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private service: TitulosService,
+    private diretoresService: DiretoresService,
+    private classesService: ClassesService,
+    private atoresService: AtoresService,
+    private Location: Location,
+    private route: ActivatedRoute
+  ) { }
+  diretores: Diretor[] = [];
+  classes: Classe[] = [];
+  atoresList: Ator[] = [];
+
+  ngOnInit() {
+    const titulo: Titulo = this.route.snapshot.data['titulo'];
+
+    this.form = this.formBuilder.group({
+      _idTitulo: 0,
+      name: titulo.name,
+      year: titulo.year,
+      synopsis: titulo.synopsis,
+      category: titulo.category,
+      diretor: titulo.diretor,
+      classe: titulo.classe,
+      atores: this.formBuilder.array([])
+      //atores: titulo.ator
+      //atores: [[]]
+    });
+
+    this.diretoresService.list().subscribe(diretores => this.diretores = diretores);
+    this.classesService.list().subscribe(classes => this.classes = classes);
+    this.atoresService.list().subscribe(atores => this.atoresList = atores);
+    console.log("essa aqui = "+this.form.value.atores)
+  }
+  /* onSubmit(): void {
+    const novoTitulo = this.form.value;
+    this.service.save(novoTitulo).subscribe(
+      (tituloCriado) => {
+        console.log('Novo título criado:', tituloCriado);
+        // Realize qualquer outra ação necessária após a criação do título
+      },
+      (erro) => {
+        console.error('Erro ao criar novo título:', erro);
+      }
+    );
+  } */
+
+  onSubmit() {
+    console.log(this.form.value)
+
+    if (this.form.valid) {
+      console.log("aaaaa "+ this.form.value.atores)
+      
+      this.service.save(this.form.value).subscribe(
+        (response) => {
+          this.onSucess()
+          console.log('Título adicionado com sucesso:', response);
+        },
+        (error) => {
+          console.error('Erro ao adicionar título:', error);
+        }
+      );
+    }
+  }
+
+  addAtor() {
+    const atorControl = this.formBuilder.group({
+      ator: [null, Validators.required],
+    });
+    (this.form.get('atores') as FormArray).push(atorControl);
+  }
+  
+  removeAtor(index: number) {
+    (this.form.get('atores') as FormArray).removeAt(index);
+  }
+
+  getAtorControls() {
+    return (this.form.get('atores') as FormArray).controls as FormGroup[];
+  }
+
+  onCancel() {
+    this.Location.back();
+  }
+
+  onSucess() {
+    this.onCancel();
+  }
+}
+/* export class TitulosFormComponent implements OnInit {
+
   form = this.formBuilder.group({
-    _idTitulo: 0,
+    _idTitulo: [0],
     name: [''],
-    year: 0,
+    year: [0],
     synopsis: [''],
     category: [''],
     diretor: this.formBuilder.group({
-      _idDiretor: 0,
+      _idDiretor: [0],
       name: ['']
     }),
     classe: this.formBuilder.group({
-      _idClasse: 0,
+      _idClasse: [0],
       name: [''],
-      valor: 0,
+      valor: [0],
       date: ['']
     }),
     atores: this.formBuilder.array([])
@@ -98,9 +190,9 @@ export class TitulosFormComponent implements OnInit {
   }
 
   private validateAtor(): boolean {
-    const atoresArray = this.form.value.atores as Array<number>;
-    return atoresArray.every(atorId =>
-      atorId === null || (atorId !== undefined && this.atoresList.map(ator => ator._idAtor).includes(atorId))
+    const atoresArray = this.form.value.atores as Array<{ _idAtor: number | null }>;
+    return atoresArray.every(ator =>
+      ator._idAtor === null || (ator._idAtor !== undefined && this.atoresList.map(a => a._idAtor).includes(ator._idAtor))
     );
   }
 
@@ -120,105 +212,6 @@ export class TitulosFormComponent implements OnInit {
     return (this.form.get('atores') as FormArray).controls as FormGroup[];
   }
 
-  /* addAtor() {
-    const atorControl = this.formBuilder.control(null);
-    (this.form.get('atores') as FormArray).push(atorControl);
-  }
-  
-  removeAtor(index: number) {
-    (this.form.get('atores') as FormArray).removeAt(index);
-  } */
-
-  /* private validateAtor(): boolean {
-    const idAtorArray = this.form.value.ator as Array<{ _idAtor: number | null | undefined }>;
-    return idAtorArray.every(ator =>
-      ator?._idAtor === null || (ator?._idAtor !== undefined && this.atores.map(a => a._idAtor).includes(ator?._idAtor))
-    );
-  } */
-
-  /* addAtor() {
-    const atoresArray = this.form.get('atores') as FormArray;
-    atoresArray.push(this.formBuilder.control(null));
-  }
-
-  removeAtor(index: number) {
-    const atoresArray = this.form.get('atores') as FormArray;
-    atoresArray.removeAt(index);
-  } */
-
-  // Obtém controles do array de atores para uso no template
-  /* getAtorControls() {
-    return (this.form.get('atores') as FormArray).controls;
-  } */
-
-  /* form = this.formBuilder.group({
-    _idTitulo: 0,
-    name: [''],
-    year: 0,
-    synopsis: [''],
-    category: [''],
-    diretor: this.formBuilder.group({
-      _idDiretor: 0,
-      name: ['']
-    }),
-    classe: this.formBuilder.group({
-      _idClasse: 0,
-      name: [''],
-      valor: 0,
-      date: ['']
-    }),
-    ator: this.formBuilder.array<Ator>([])
-  });
-
-  
-
-  constructor(private formBuilder: NonNullableFormBuilder, 
-    private service: TitulosService,
-    private Location: Location,
-    private route: ActivatedRoute) { }
-
-  ngOnInit() {
-    const titulo: Titulo = this.route.snapshot.data['titulo'];
-
-    this.form.patchValue({
-      _idTitulo: titulo._idTitulo,
-      name: titulo.name,
-      year: titulo.year,
-      synopsis: titulo.synopsis,
-      category: titulo.category,
-      diretor: {
-        _idDiretor: titulo.diretor._idDiretor,
-        name: titulo.diretor.name
-      },
-      classe: {
-        _idClasse: titulo.classe._idClasse,
-        name: titulo.classe.name,
-        valor: titulo.classe.valor,
-        date: titulo.classe.date
-      }
-    });
-
-    const atoresFormArray = this.form.get('ator') as FormArray;
-    titulo.ator.forEach(ator => {
-      atoresFormArray.push(
-        this.formBuilder.group({
-          _idAtor: [ator._idAtor],
-          name: [ator.name]
-        })
-      );
-    });
-  }
-
-  onSubmit() {
-    const formularioDados = {
-      ...this.form.value,
-      diretor: this.form.value.diretor as Diretor,
-      classe: this.form.value.classe as Classe
-    };
-
-    this.service.save(formularioDados).subscribe(result => this.onSucess());
-  } */
-
   onCancel() {
     this.Location.back();
   }
@@ -226,4 +219,4 @@ export class TitulosFormComponent implements OnInit {
   onSucess() {
     this.onCancel();
   }
-}
+} */

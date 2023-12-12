@@ -26,6 +26,7 @@ export class TitulosService {
   }
 
   save(record: Partial<Titulo>) {
+    console.log("record.ator é = "+record.ator)
     if (record._idTitulo) {
       return this.update(record);
     }
@@ -33,7 +34,9 @@ export class TitulosService {
   }
 
   private create(record: Partial<Titulo>) {
-    return this.httpCLient.post<Titulo>(this.API,record).pipe(first());
+    console.log(record._idTitulo)
+    console.log('Objeto record antes do envio:', record);
+    return this.httpCLient.post<Titulo>(this.API,record);
   }
 
   private update(record: Partial<Titulo>) {

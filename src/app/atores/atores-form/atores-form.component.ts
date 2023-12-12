@@ -29,6 +29,7 @@ export class AtoresFormComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.form.value)
     console.log("o id no onSubmit = " + this.form.value._idAtor)
     this.service.save(this.form.value).subscribe(result => this.onSucess())
   }

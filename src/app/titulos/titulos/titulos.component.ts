@@ -25,8 +25,9 @@ export class TitulosComponent implements OnInit {
     this.refresh();
   }
 
-  refresh() {
+  refresh() {  
     this.titulos$ = this.titulosService.list()
+    console.log(this.titulos$)
   }
 
   onAdd() {
